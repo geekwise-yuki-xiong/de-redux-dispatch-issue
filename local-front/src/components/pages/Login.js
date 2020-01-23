@@ -28,21 +28,15 @@ export class Login extends Component {
 
     formSubmit = (event) => {
         event.preventDefault();
-        console.log(this.state)
-        axios
-            .post('https://bank-backend-deidra.herokuapp.com/auth/login', this.state)
-            .then(response => console.log(response.data))
-            .catch(error => console.log(error));
-        console.log('LOOK HERE FORM SUBMIT: ' + this.state.username + ' ' + this.state.password)
-        login(this.state.username, this.state.password, this.context.dispatch);
+        this.props.login(this.state.username, this.state.password);
         this.setState({username: ''});
         this.setState({password: ''});
     }
 
     render() {
-        console.log ( this )
+        // console.log ( this.isAuthenticated );
         // console.log('THIS IS RENDER: ' + this.context.auth.isAuthenticated)
-        if(this.isAuthenticated){
+        if(this.props.isAuthenticated){
             return <Redirect to="/dashboard" />
         }
         const { username, password} = this.state;
