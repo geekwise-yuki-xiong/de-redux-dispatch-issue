@@ -15,13 +15,17 @@ class Client extends Component {
       clients: [],
       branch_id: [],
       branchName: '',
+      dataReady: false
     };
   }
 
   componentDidMount() {
     axios
       .get("https://bank-backend-deidra.herokuapp.com/client/")
-      .then(res => this.setState({ clients: res.data }))
+      .then(res => {
+        this.setState({ clients: res.data });
+        this.setState({ dataReady: true });
+      })
       .catch(err => console.log(err));
     axios
       .get("https://bank-backend-deidra.herokuapp.com/branch/")
@@ -49,6 +53,18 @@ class Client extends Component {
   //   return (<div>test</div>)
   // }
 
+  putBranchName(branchURL) {
+    const branchID = branchURL[branchURL.length-2];
+    // console.log(branchURL[branchURL.length-2], branchURL);
+    for(let i=0; i<this.state.branch_id.length; i++) {
+      if(parseInt(branchID) == this.state.branch_id[i].id) {
+        return(this.state.branch_id[i].branch_name);
+      }
+      // console.log(this.state.branch_id[i].id);
+    }
+    // console.log(this.state.branch_id);
+  }
+
   renderClients() {
     let newClient = [];
     newClient = this.state.clients;
@@ -61,7 +77,7 @@ class Client extends Component {
         <li key={client.id}  className="li-render col-8">
          Name: {client.client_name} <br/>
          Email: {client.client_email} <br/>
-         Branch: {client.connect_to_branch}
+         Branch: {this.putBranchName(client.connect_to_branch)}
         </li>
 
         <div className="col-lg-3 col-md-4 offset-md-1 col-sm-2">
@@ -130,7 +146,6 @@ class Client extends Component {
   render() {
     return (
       <div className="branch-box-style offset-2 col-8 col-sm-6 offset-sm-3 justify-content-center">
-
           {/* {this.renderClients()} */}
         <button onClick={this.createClient} className="btn btn-dark btn-lg col-4">
           + New Client
